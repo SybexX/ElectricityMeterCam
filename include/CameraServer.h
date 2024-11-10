@@ -21,16 +21,18 @@
  */
 
 #pragma once
+#include <Arduino.h>
+#include <sstream>
+#include <functional>
+#include <vector>
+
 #include "SDCard.h"
 #include "esp_camera.h"
 #include "fb_gfx.h"
 #include "fr_forward.h"
-#include <Arduino.h>
 #include "ImageUtils.h"
 #include "esp_http_server.h"
 #include "camera_pins.h"
-#include <sstream>
-#include <functional>
 #include "Settings.h"
 
 struct KwhInfo

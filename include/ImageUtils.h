@@ -23,11 +23,14 @@
 
 #pragma once
 #include <Arduino.h>
+#include "esp_camera.h"
 #include "fb_gfx.h"
 #include "fr_forward.h"
+
 #ifdef min
 #undef min
 #endif
+
 #ifdef max
 #undef max
 #endif
