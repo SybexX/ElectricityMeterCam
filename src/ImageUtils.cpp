@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@
 
 #include "ImageUtils.h"
 
-void ImageUtils::DrawRect(const int x, const int y, const int w, const int h, const uint32_t color, dl_matrix3du_t* dst)
+void ImageUtils::DrawRect(const int x, const int y, const int w, const int h, const uint32_t color, dl_matrix3du_t *dst)
 {
     fb_data_t fb;
     fb.width = dst->w;
@@ -32,12 +32,12 @@ void ImageUtils::DrawRect(const int x, const int y, const int w, const int h, co
     fb.format = FB_BGR888;
 
     fb_gfx_drawFastHLine(&fb, x, y, w, color);
-    fb_gfx_drawFastHLine(&fb, x, y+h-1, w, color);
+    fb_gfx_drawFastHLine(&fb, x, y + h - 1, w, color);
     fb_gfx_drawFastVLine(&fb, x, y, h, color);
-    fb_gfx_drawFastVLine(&fb, x+w-1, y, h, color);
+    fb_gfx_drawFastVLine(&fb, x + w - 1, y, h, color);
 }
 
-void ImageUtils::DrawFillRect(const int x, const int y, const int w, const int h, const uint32_t color, dl_matrix3du_t* dst)
+void ImageUtils::DrawFillRect(const int x, const int y, const int w, const int h, const uint32_t color, dl_matrix3du_t *dst)
 {
     fb_data_t fb;
     fb.width = dst->w;
@@ -49,7 +49,7 @@ void ImageUtils::DrawFillRect(const int x, const int y, const int w, const int h
     fb_gfx_fillRect(&fb, x, y, w, h, color);
 }
 
-void ImageUtils::DrawText(const int x, const int y, const uint32_t color, const String& txt, dl_matrix3du_t* dst)
+void ImageUtils::DrawText(const int x, const int y, const uint32_t color, const String &txt, dl_matrix3du_t *dst)
 {
     fb_data_t fb;
     fb.width = dst->w;
@@ -62,12 +62,12 @@ void ImageUtils::DrawText(const int x, const int y, const uint32_t color, const 
 }
 
 void ImageUtils::GetNormalizedPixels(
-    const dl_matrix3du_t* src, 
-    const int srcRectX, 
-    const int srcRectY, 
+    const dl_matrix3du_t *src,
+    const int srcRectX,
+    const int srcRectY,
     const int srcRectWidth,
-    const int srcRectHeight, 
-    float* dst,
+    const int srcRectHeight,
+    float *dst,
     const int dstWidth,
     const int dstHeight)
 {
@@ -82,9 +82,11 @@ void ImageUtils::GetNormalizedPixels(
     if (srcRectWidth == dstWidth && srcRectHeight == dstHeight)
     {
         int dstIdx = 0;
+
         for (int _y = srcRectY; _y < srcRectY + srcRectHeight; _y++)
         {
             int offset = _y * src->w;
+
             for (int _x = srcRectX; _x < srcRectX + srcRectWidth; _x++)
             {
                 const int idx = (offset + _x) * 3;
@@ -92,7 +94,7 @@ void ImageUtils::GetNormalizedPixels(
             }
         }
     }
-    else // nearest neighbor scaling 
+    else // nearest neighbor scaling
     {
         auto getSrcRectPixelByUV = [&](const float u, const float v) -> float
         {
@@ -123,6 +125,7 @@ uint32_t ImageUtils::GetColorFromConfidence(const float confidence, const float 
     float bf = 0.0f;
     uint32_t colorA = 0;
     uint32_t colorB = 0;
+
     if (value < 0.5f)
     {
         bf = value * 2.0f;
@@ -136,12 +139,14 @@ uint32_t ImageUtils::GetColorFromConfidence(const float confidence, const float 
         colorB = COLOR_GREEN;
     }
 
-    uint8_t* a = (uint8_t*)&colorA;
-    uint8_t* b = (uint8_t*)&colorB;    
-    uint8_t* c = (uint8_t*)&result;
+    uint8_t *a = (uint8_t *)&colorA;
+    uint8_t *b = (uint8_t *)&colorB;
+    uint8_t *c = (uint8_t *)&result;
+
     for (uint8_t i = 0; i < 4; ++i)
     {
         c[i] = (uint8_t)((1.0f - bf) * a[i] + bf * b[i]);
     }
+
     return result;
 }

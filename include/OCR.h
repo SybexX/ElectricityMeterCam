@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 
-
 #pragma once
 #include "ImageUtils.h"
 #include <math.h>
@@ -32,24 +31,24 @@
 class OCR
 {
 public:
-    OCR(const void* model, const int inputWidth, const int inputHeight, const int outputClasses);
+    OCR(const void *model, const int inputWidth, const int inputHeight, const int outputClasses);
     ~OCR();
 
     int PredictDigit(
-        const dl_matrix3du_t* frame, 
-        const int rectX, 
-        const int rectY, 
-        const int rectWidth, 
+        const dl_matrix3du_t *frame,
+        const int rectX,
+        const int rectY,
+        const int rectWidth,
         const int rectHeight,
-        float* confidence = nullptr);
+        float *confidence = nullptr);
 
 private:
     int _inputWidth;
     int _inputHeight;
     int _outputClasses;
-    uint8_t* _tensorMemoryPool = nullptr;
-    const tflite::Model* _model;
-    tflite::MicroInterpreter* _interpreter;
-    TfLiteTensor* _input;
-    TfLiteTensor* _output;
+    uint8_t *_tensorMemoryPool = nullptr;
+    const tflite::Model *_model;
+    tflite::MicroInterpreter *_interpreter;
+    TfLiteTensor *_input;
+    TfLiteTensor *_output;
 };

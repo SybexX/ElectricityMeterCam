@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,52 +25,52 @@
 
 constexpr int tensor_pool_size = 64 * 1024;
 
-OCR::OCR(const void* model, const int inputWidth, const int inputHeight, const int outputClasses) :
-    _inputWidth(inputWidth),
-    _inputHeight(inputHeight),
-    _outputClasses(outputClasses),
-    _interpreter(nullptr),
-    _input(nullptr),
-    _output(nullptr)
+OCR::OCR(const void *model, const int inputWidth, const int inputHeight, const int outputClasses) : _inputWidth(inputWidth),
+                                                                                                    _inputHeight(inputHeight),
+                                                                                                    _outputClasses(outputClasses),
+                                                                                                    _interpreter(nullptr),
+                                                                                                    _input(nullptr),
+                                                                                                    _output(nullptr)
 {
     // Load the model
-	Serial.println("Loading Tensorflow model....");
-	_model = tflite::GetModel(model);
-	Serial.println("model loaded!");
+    Serial.println("Loading Tensorflow model....");
+    _model = tflite::GetModel(model);
+    Serial.println("model loaded!");
 
-	// Define ops resolver and error reporting
-	static tflite::ops::micro::AllOpsResolver resolver;
+    // Define ops resolver and error reporting
+    static tflite::ops::micro::AllOpsResolver resolver;
 
-	static tflite::ErrorReporter* error_reporter;
-	static tflite::MicroErrorReporter micro_error;
-	error_reporter = &micro_error;
+    static tflite::ErrorReporter *error_reporter;
+    static tflite::MicroErrorReporter micro_error;
+    error_reporter = &micro_error;
 
-	// Instantiate the interpreter 
+    // Instantiate the interpreter
     Serial.println("Allocating memory pool");
-    _tensorMemoryPool = (uint8_t*)malloc(tensor_pool_size);
+    _tensorMemoryPool = (uint8_t *)malloc(tensor_pool_size);
+
     if (_tensorMemoryPool == nullptr)
     {
         Serial.print("failed to allocate tensor pool");
         return;
     }
 
-	static tflite::MicroInterpreter static_interpreter(
-		_model, resolver, _tensorMemoryPool, tensor_pool_size, error_reporter
-	);
+    static tflite::MicroInterpreter static_interpreter(_model, resolver, _tensorMemoryPool, tensor_pool_size, error_reporter);
 
-	_interpreter = &static_interpreter;
+    _interpreter = &static_interpreter;
 
-	// Allocate the the model's tensors in the memory pool that was created.
-	Serial.println("Allocating tensors to memory pool");
-	if(_interpreter->AllocateTensors() != kTfLiteOk) {
-		Serial.println("There was an error allocating the memory...ooof");
-		return;
-	}
+    // Allocate the the model's tensors in the memory pool that was created.
+    Serial.println("Allocating tensors to memory pool");
 
-	// Define input and output nodes
-	_input = _interpreter->input(0);
-	_output = _interpreter->output(0);
-	Serial.println("Starting inferences... ! ");
+    if (_interpreter->AllocateTensors() != kTfLiteOk)
+    {
+        Serial.println("There was an error allocating the memory...ooof");
+        return;
+    }
+
+    // Define input and output nodes
+    _input = _interpreter->input(0);
+    _output = _interpreter->output(0);
+    Serial.println("Starting inferences... ! ");
 }
 
 OCR::~OCR()
@@ -78,14 +78,14 @@ OCR::~OCR()
     if (_tensorMemoryPool != nullptr)
     {
         free(_tensorMemoryPool);
-    }  
+    }
 }
 
-int OCR::PredictDigit(const dl_matrix3du_t* frame, const int rectX, const int rectY, const int rectWidth, const int rectHeight, float* confidence)
+int OCR::PredictDigit(const dl_matrix3du_t *frame, const int rectX, const int rectY, const int rectWidth, const int rectHeight, float *confidence)
 {
     auto start = millis();
     ImageUtils::GetNormalizedPixels(
-        frame, 
+        frame,
         rectX,
         rectY,
         rectWidth,
@@ -99,7 +99,7 @@ int OCR::PredictDigit(const dl_matrix3du_t* frame, const int rectX, const int re
     start = end;
 
     // Run inference on the input data
-    if(_interpreter->Invoke() != kTfLiteOk)
+    if (_interpreter->Invoke() != kTfLiteOk)
     {
         Serial.println("There was an error invoking the interpreter!");
         return -1;
@@ -107,9 +107,11 @@ int OCR::PredictDigit(const dl_matrix3du_t* frame, const int rectX, const int re
 
     float bestConf = 0.0;
     int bestMatch = -1;
+
     for (int i = 0; i < _outputClasses; i++)
-    {        
+    {
         Serial.print(String("[") + i + "](" + (int)round(_output->data.f[i] * 100) + "%) ");
+
         if (i < 10 && _output->data.f[i] > bestConf)
         {
             bestConf = _output->data.f[i];
@@ -123,7 +125,7 @@ int OCR::PredictDigit(const dl_matrix3du_t* frame, const int rectX, const int re
     {
         *confidence = bestConf;
     }
-    
+
     end = millis();
     Serial.println(String("Inference: ") + (end - start) + "ms");
 

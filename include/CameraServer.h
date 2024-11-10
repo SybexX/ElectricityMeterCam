@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,8 +41,7 @@ struct KwhInfo
     float confidence;
     unsigned long unixtime;
 
-    KwhInfo() :
-        kwh(0), confidence(0), unixtime(0)
+    KwhInfo() : kwh(0), confidence(0), unixtime(0)
     {
     }
 };
@@ -50,16 +49,16 @@ struct KwhInfo
 class CameraServer
 {
 public:
-    CameraServer(Settings& settings);
+    CameraServer(Settings &settings);
     ~CameraServer();
 
     bool StartServer();
     bool InitCamera(const bool flipImage);
 
-    dl_matrix3du_t* CaptureFrame(const unsigned long timestamp, SDCard* sdCard = nullptr);
+    dl_matrix3du_t *CaptureFrame(const unsigned long timestamp, SDCard *sdCard = nullptr);
     void SwapBuffers();
-    
-    void SetLatestKwh(const KwhInfo& info);
+
+    void SetLatestKwh(const KwhInfo &info);
 
     esp_err_t HttpGetIndex(httpd_req_t *req);
     esp_err_t HttpGetLive(httpd_req_t *req);
@@ -71,14 +70,14 @@ public:
     bool UserConnected();
 
 private:
-    Settings& _settings;
-    dl_matrix3du_t* _frontRgbBuffer;
-    dl_matrix3du_t* _backRgbBuffer;
+    Settings &_settings;
+    dl_matrix3du_t *_frontRgbBuffer;
+    dl_matrix3du_t *_backRgbBuffer;
     uint32_t _numCapturedFrames;
     uint32_t _numStoredFrames;
     httpd_handle_t _httpServer;
     SemaphoreHandle_t _httpSemaphore;
-    dl_matrix3du_t* _httpFrontRgbBuffer;
+    dl_matrix3du_t *_httpFrontRgbBuffer;
     KwhInfo _latestKwhInfo;
     unsigned long _lastUserInteraction;
 };

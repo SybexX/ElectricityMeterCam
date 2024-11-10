@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,9 +35,10 @@ void WifiHelper::Connect()
 
     WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE);
     WiFi.setHostname(HOSTNAME);
-    
+
     WiFi.begin(WIFI_SSID, WIFI_KEY);
     delay(500);
+
     if (!WiFi.isConnected())
     {
         delay(500);

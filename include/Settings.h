@@ -11,8 +11,7 @@ struct DigitBBox
     uint32_t w;
     uint32_t h;
 
-    DigitBBox() :
-        x(0), y(0), w(30), h(42)
+    DigitBBox() : x(0), y(0), w(30), h(42)
     {
     }
 };
@@ -29,8 +28,8 @@ public:
     DigitBBox GetDigitBBox(uint8_t idx);
 
     String GetDigitBBoxesAsJson();
-    bool SetDigitBBoxesFromJson(const char* json);
-    
+    bool SetDigitBBoxesFromJson(const char *json);
+
 private:
     DigitBBox _digitBBoxes[NUM_DIGITS];
     Preferences _preferences;

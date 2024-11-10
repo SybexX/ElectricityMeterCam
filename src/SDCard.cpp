@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,9 +24,9 @@
 
 SDCard::SDCard()
     : _mounted(false)
-{    
+{
 }
-    
+
 SDCard::~SDCard()
 {
     Unmount();
@@ -39,27 +39,27 @@ bool SDCard::Mount()
         return true;
     }
 
-    if(!SD_MMC.begin("/sdcard", true)) // using slow mode1bit to allow use of LED on pin 4
+    if (!SD_MMC.begin("/sdcard", true)) // using slow mode1bit to allow use of LED on pin 4
     {
         return false;
     }
 
     switch (SD_MMC.cardType())
     {
-        case CARD_MMC:
-            Serial.print("Mounted MMC-Card");
-            break;
-        case CARD_SD:
-            Serial.print("Mounted SD-Card");
-            break;
-        case CARD_SDHC:
-            Serial.print("Mounted SDHC-Card");
-            break;
-        case CARD_UNKNOWN:
-            Serial.print("Mounted Unknown-Card");
-            break;
-        default:
-            return false;
+    case CARD_MMC:
+        Serial.print("Mounted MMC-Card");
+        break;
+    case CARD_SD:
+        Serial.print("Mounted SD-Card");
+        break;
+    case CARD_SDHC:
+        Serial.print("Mounted SDHC-Card");
+        break;
+    case CARD_UNKNOWN:
+        Serial.print("Mounted Unknown-Card");
+        break;
+    default:
+        return false;
     }
 
     uint64_t cardSize = SD_MMC.cardSize() / (1024 * 1024);
@@ -87,6 +87,7 @@ bool SDCard::IsWritable()
     {
         String filePath = "/.w";
         File file = SD_MMC.open(filePath, FILE_WRITE);
+
         if (file)
         {
             file.write(42);
@@ -98,15 +99,18 @@ bool SDCard::IsWritable()
         }
 
         file = SD_MMC.open(filePath, FILE_READ);
+
         if (file)
-        {  
+        {
             bool result = file.read() == 42;
             file.close();
             SD_MMC.remove("/.w");
             return result;
         }
+
         return false;
     }
+
     return false;
 }
 
@@ -116,21 +120,23 @@ uint64_t SDCard::GetFreeSpaceInBytes()
     {
         return SD_MMC.totalBytes() - SD_MMC.usedBytes();
     }
+
     return 0;
 }
 
-bool SDCard::WriteToFile(const String& filePath, const String& line, const bool append)
+bool SDCard::WriteToFile(const String &filePath, const String &line, const bool append)
 {
     if (IsMounted())
     {
         Serial.println(String("Writing '") + filePath + "' " + line);
         File file = SD_MMC.open(filePath, append ? FILE_APPEND : FILE_WRITE);
-        if(!file)
+
+        if (!file)
         {
             return false;
         }
 
-        file.write((uint8_t*)line.c_str(), line.length());
+        file.write((uint8_t *)line.c_str(), line.length());
         file.write('\n');
 
         file.close();
@@ -140,17 +146,18 @@ bool SDCard::WriteToFile(const String& filePath, const String& line, const bool 
     return false;
 }
 
-bool SDCard::OpenFileForWriting(const String& filePath, File& file)
+bool SDCard::OpenFileForWriting(const String &filePath, File &file)
 {
     if (IsMounted())
     {
         Serial.println(String("Writing '") + filePath + "'");
         file = SD_MMC.open(filePath, FILE_WRITE);
-        
+
         if (file)
         {
             return true;
         }
     }
+
     return false;
 }

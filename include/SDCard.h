@@ -1,6 +1,6 @@
 /**
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021 Marc Roßbach
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 
-
 #pragma once
 #include <Arduino.h>
 #include "FS.h"
@@ -37,8 +36,8 @@ public:
     bool IsMounted();
     bool IsWritable();
     uint64_t GetFreeSpaceInBytes();
-    bool WriteToFile(const String& filePath, const String& line, const bool append = true);
-    bool OpenFileForWriting(const String& filePath, File& file);
+    bool WriteToFile(const String &filePath, const String &line, const bool append = true);
+    bool OpenFileForWriting(const String &filePath, File &file);
 
 private:
     bool _mounted;
