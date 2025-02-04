@@ -96,14 +96,14 @@ void taskDelay(unsigned long milisec)
 
 void mqttUpdate()
 {
-    if (strlen(CLOUD) > 0)
+    if (strlen(MQTT_ADDRES) > 0)
     {
         for (int i = 0; i < 5 && !mqttClient.connected(); ++i)
         {
             Serial.print("Attempting MQTT connection...");
 
             // Attempt to connect
-            if (mqttClient.connect("metercam", USER, PASS))
+            if (mqttClient.connect("metercam", MQTT_USER, MQTT_PASS))
             {
                 Serial.println("connected");
             }
@@ -161,7 +161,7 @@ void setup()
     }
 
     timeClient.begin();
-    mqttClient.setServer(CLOUD, 1883);
+    mqttClient.setServer(MQTT_ADDRES, MQTT_PORT);
 }
 
 void loop()
